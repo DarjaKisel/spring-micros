@@ -1,0 +1,98 @@
+services:
+
+  discovery:
+    extends:
+      file: ./discovery/app.yml
+      service: discovery
+    networks:
+      - micros-network
+    restart: always
+    ports:
+      - "8761:8761"
+
+  config:
+    extends:
+      file: ./config/app.yml
+      service: config
+    networks:
+      - micros-network
+    restart: always
+    ports:
+      - "8888:8888"
+
+#  service-producer:
+#    extends:
+#      file: /service-producer/app.yml
+#      service: service-producer
+#    environment:
+#      SPRING_KAFKA_PRODUCER_BOOTSTRAP_SERVERS: kafka:9092
+#    depends_on:
+#      [ eureka, config, kafka ]
+#    networks:
+#      - micros-network
+#    scale: 3
+#    restart: always
+#    ports:
+#      - "8081"
+#
+#  service-consumer:
+#    extends:
+#      file: /service-consumer/app.yml
+#      service: service-consumer
+#    environment:
+#      SPRING_REDIS_HOST: redis
+#      SPRING_REDIS_PORT: 6379
+#      SPRING_REDIS_PASSWORD: Redis2019!
+#      SPRING_KAFKA_CONSUMER_BOOTSTRAP_SERVERS: kafka:9092
+#    depends_on:
+#      [ eureka, config, kafka, service-producer ]
+#    networks:
+#      - micros-network
+#    scale: 3
+#    restart: always
+#    ports:
+#      - "8082"
+#
+#  gateway:
+#    extends:
+#      file: /gateway/app.yml
+#      service: gateway
+#    depends_on:
+#      [ eureka, config, service-producer, service-comsumer ]
+#    networks:
+#      - micros-network
+#    restart: always
+#    ports:
+#      - "9090:9090"
+#
+#  zookeeper:
+#    image: bitnami/zookeeper:latest
+#    environment:
+#      ZOOKEEPER_CLIENT_PORT: 2181
+#      ZOOKEEPER_TICK_TIME: 2000
+#    ports:
+#      - 2181:2181
+#    restart: always
+#    networks:
+#      - micros-network
+#
+#  kafka:
+#    image: bitnami/kafka:latest
+#    depends_on:
+#      - zookeeper
+#    ports:
+#      - 9092:29092
+#    restart: always
+#    environment:
+#      KAFKA_BROKER_ID: 1
+#      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+#      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+#      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+#      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+#      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+#    networks:
+#      - micros-network
+
+networks:
+  micros-network:
+    driver: bridge
