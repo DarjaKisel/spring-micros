@@ -20,24 +20,43 @@ services:
     ports:
       - "8888:8888"
 
-#  service-producer:
-#    extends:
-#      file: /service-producer/app.yml
-#      service: service-producer
-#    environment:
-#      SPRING_KAFKA_PRODUCER_BOOTSTRAP_SERVERS: kafka:9092
-#    depends_on:
-#      [ eureka, config, kafka ]
-#    networks:
-#      - micros-network
-#    scale: 3
-#    restart: always
-#    ports:
-#      - "8081"
+  mysql:
+    image: mariadb
+    environment:
+      - MYSQL_DATABASE=mysql
+      - MYSQL_PASSWORD=password@321
+      - MYSQL_ROOT_PASSWORD=rootpassword@321
+    restart: always
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent" ]
+      interval: 3s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - mysqldb-data:/var/lib/mysql
+    networks:
+      - micros-mysql
+
+  service-producer:
+    extends:
+      file: ./service-producer/app.yml
+      service: service-producer
+    environment:
+      MYSQL_HOST: mysqldb
+      SPRING_KAFKA_PRODUCER_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      [ discovery, config, kafka, mysql ]
+    networks:
+      - micros-network
+      - micros-mysql
+    scale: 1
+    restart: always
+    ports:
+      - "8081"
 #
 #  service-consumer:
 #    extends:
-#      file: /service-consumer/app.yml
+#      file: ./service-consumer/app.yml
 #      service: service-consumer
 #    environment:
 #      SPRING_REDIS_HOST: redis
@@ -45,54 +64,60 @@ services:
 #      SPRING_REDIS_PASSWORD: Redis2019!
 #      SPRING_KAFKA_CONSUMER_BOOTSTRAP_SERVERS: kafka:9092
 #    depends_on:
-#      [ eureka, config, kafka, service-producer ]
+#      [ discovery, config, kafka, service-producer ]
 #    networks:
 #      - micros-network
-#    scale: 3
+#    scale: 1
 #    restart: always
 #    ports:
 #      - "8082"
 #
 #  gateway:
 #    extends:
-#      file: /gateway/app.yml
+#      file: ./gateway/app.yml
 #      service: gateway
 #    depends_on:
-#      [ eureka, config, service-producer, service-comsumer ]
+#      [ discovery, config, service-producer, service-comsumer ]
 #    networks:
 #      - micros-network
 #    restart: always
 #    ports:
 #      - "9090:9090"
 #
-#  zookeeper:
-#    image: bitnami/zookeeper:latest
-#    environment:
-#      ZOOKEEPER_CLIENT_PORT: 2181
-#      ZOOKEEPER_TICK_TIME: 2000
-#    ports:
-#      - 2181:2181
-#    restart: always
-#    networks:
-#      - micros-network
-#
-#  kafka:
-#    image: bitnami/kafka:latest
-#    depends_on:
-#      - zookeeper
-#    ports:
-#      - 9092:29092
-#    restart: always
-#    environment:
-#      KAFKA_BROKER_ID: 1
-#      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-#      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
-#      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-#      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-#      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-#    networks:
-#      - micros-network
+  zookeeper:
+    image: bitnami/zookeeper:latest
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=2181
+      - ZOOKEEPER_TICK_TIME=2000
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    ports:
+      - 2181:2181
+    restart: always
+    networks:
+      - micros-network
 
+  kafka:
+    image: bitnami/kafka:latest
+    depends_on:
+      - zookeeper
+    ports:
+      - 9092:29092
+    restart: always
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka1:9092,EXTERNAL://localhost:9093
+      - KAFKA_INTER_BROKER_LISTENER_NAME=CLIENT
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+
+    networks:
+      - micros-network
+
+volumes:
+  mysqldb-data: {}
 networks:
   micros-network:
     driver: bridge
+  micros-mysql: {}

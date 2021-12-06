@@ -2,16 +2,29 @@ services:
 
   service-consumer:
     image: dzinevich/service-consumer
-    #    environment:
-    #      - _JAVA_OPTIONS=-Xmx512m -Xms256m
-    #      - SPRING_PROFILES_ACTIVE=prod,swagger
-    #      - SPRING_DATASOURCE_URL=jdbc:mysql://jhimysql-mysql:3306/jhimysql?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
-    #      - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_OIDC_ISSUER_URI=http://keycloak:9080/auth/realms/jhipster
-    #      - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_OIDC_CLIENT_ID=web_app
-    #      - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_OIDC_CLIENT_SECRET=web_app
-    #      - JHIPSTER_SLEEP=30 # gives time for other services to boot before the application
-    #      - SPRING_DATA_JEST_URI=http://jhimysql-elasticsearch:9200
-    #      - SPRING_ELASTICSEARCH_REST_URIS=http://jhimysql-elasticsearch:9200
-    #      - KAFKA_BOOTSTRAPSERVERS=kafka:9092
-    #    ports:
-    #      - 8082:8082
+    restart: always
+    environment:
+      SPRING_REDIS_DATABASE: 0
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 16379
+      SPRING_REDIS_PASSWORD: Redis@321!
+      SPRING_REDIS_TIMEOUT: 60000
+    networks:
+      - micros-network
+      - micros-redis
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  redis:
+    image: redis
+    command: redis-server --requirepass Redis@321!
+    ports:
+      - "16379:6379"
+    restart: always
+    networks:
+      - micros-redis
+
+networks:
+  micros-network: {}
+  micros-redis: {}

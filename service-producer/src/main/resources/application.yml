@@ -1,0 +1,17 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: service-producer
+  cloud:
+    discovery:
+      enabled: true
+    config:
+      discovery:
+        service-id: config
+      fail-fast: true
+
+logging:
+  level:
+    service-producer: DEBUG
