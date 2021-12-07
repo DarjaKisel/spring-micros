@@ -14,6 +14,8 @@ services:
     extends:
       file: ./config/app.yml
       service: config
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
     networks:
       - micros-network
     restart: always
@@ -21,10 +23,10 @@ services:
       - "8888:8888"
 
   mysql:
-    image: mariadb
+    image: mariadb:10.6.4-focal
+    command: '--default-authentication-plugin=mysql_native_password'
     environment:
       - MYSQL_DATABASE=mysql
-      - MYSQL_PASSWORD=password@321
       - MYSQL_ROOT_PASSWORD=rootpassword@321
     restart: always
     healthcheck:
@@ -33,9 +35,20 @@ services:
       retries: 5
       start_period: 30s
     volumes:
-      - mysqldb-data:/var/lib/mysql
+      - mysql-data:/var/lib/mysql
     networks:
-      - micros-mysql
+      - micros-network
+    expose:
+      - 3306
+
+  redis:
+    image: redis
+    command: redis-server --requirepass Redis@321!
+    ports:
+      - "16379:6379"
+    restart: always
+    networks:
+      - micros-network
 
   service-producer:
     extends:
@@ -53,37 +66,37 @@ services:
     restart: always
     ports:
       - "8081"
-#
-#  service-consumer:
-#    extends:
-#      file: ./service-consumer/app.yml
-#      service: service-consumer
-#    environment:
-#      SPRING_REDIS_HOST: redis
-#      SPRING_REDIS_PORT: 6379
-#      SPRING_REDIS_PASSWORD: Redis2019!
-#      SPRING_KAFKA_CONSUMER_BOOTSTRAP_SERVERS: kafka:9092
-#    depends_on:
-#      [ discovery, config, kafka, service-producer ]
-#    networks:
-#      - micros-network
-#    scale: 1
-#    restart: always
-#    ports:
-#      - "8082"
-#
-#  gateway:
-#    extends:
-#      file: ./gateway/app.yml
-#      service: gateway
-#    depends_on:
-#      [ discovery, config, service-producer, service-comsumer ]
-#    networks:
-#      - micros-network
-#    restart: always
-#    ports:
-#      - "9090:9090"
-#
+
+  service-consumer:
+    extends:
+      file: ./service-consumer/app.yml
+      service: service-consumer
+    environment:
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+      SPRING_REDIS_PASSWORD: Redis2019!
+      SPRING_KAFKA_CONSUMER_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      [ discovery, config, redis, kafka, service-producer ]
+    networks:
+      - micros-network
+    scale: 1
+    restart: always
+    ports:
+      - "8082"
+
+  gateway:
+    extends:
+      file: ./gateway/app.yml
+      service: gateway
+    depends_on:
+      [ discovery, config ]
+    networks:
+      - micros-network
+    restart: always
+    ports:
+      - "9090:9090"
+
   zookeeper:
     image: bitnami/zookeeper:latest
     environment:
@@ -116,7 +129,7 @@ services:
       - micros-network
 
 volumes:
-  mysqldb-data: {}
+  mysql-data: {}
 networks:
   micros-network:
     driver: bridge

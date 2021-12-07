@@ -2,29 +2,3 @@ services:
 
   service-consumer:
     image: dzinevich/service-consumer
-    restart: always
-    environment:
-      SPRING_REDIS_DATABASE: 0
-      SPRING_REDIS_HOST: redis
-      SPRING_REDIS_PORT: 16379
-      SPRING_REDIS_PASSWORD: Redis@321!
-      SPRING_REDIS_TIMEOUT: 60000
-    networks:
-      - micros-network
-      - micros-redis
-    depends_on:
-      redis:
-        condition: service_healthy
-
-  redis:
-    image: redis
-    command: redis-server --requirepass Redis@321!
-    ports:
-      - "16379:6379"
-    restart: always
-    networks:
-      - micros-redis
-
-networks:
-  micros-network: {}
-  micros-redis: {}
