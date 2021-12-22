@@ -8,82 +8,21 @@ services:
       - micros-network
     restart: always
     ports:
-      - "8761:8761"
+      - 8761:8761
 
   config:
     extends:
       file: ./config/app.yml
       service: config
-    environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
-    networks:
-      - micros-network
-    restart: always
-    ports:
-      - "8888:8888"
-
-  mysql:
-    image: mariadb:10.6.4-focal
-    command: '--default-authentication-plugin=mysql_native_password'
-    environment:
-      - MYSQL_DATABASE=mysql
-      - MYSQL_ROOT_PASSWORD=rootpassword@321
-    restart: always
-    healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent" ]
-      interval: 3s
-      retries: 5
-      start_period: 30s
-    volumes:
-      - mysql-data:/var/lib/mysql
-    networks:
-      - micros-network
-    expose:
-      - 3306
-
-  redis:
-    image: redis
-    command: redis-server --requirepass Redis@321!
-    ports:
-      - "16379:6379"
-    restart: always
-    networks:
-      - micros-network
-
-  service-producer:
-    extends:
-      file: ./service-producer/app.yml
-      service: service-producer
-    environment:
-      MYSQL_HOST: mysqldb
-      SPRING_KAFKA_PRODUCER_BOOTSTRAP_SERVERS: kafka:9092
     depends_on:
-      [ discovery, config, kafka, mysql ]
+      - discovery
     networks:
       - micros-network
-      - micros-mysql
-    scale: 1
     restart: always
     ports:
-      - "8081"
-
-  service-consumer:
-    extends:
-      file: ./service-consumer/app.yml
-      service: service-consumer
+      - 8888:8888
     environment:
-      SPRING_REDIS_HOST: redis
-      SPRING_REDIS_PORT: 6379
-      SPRING_REDIS_PASSWORD: Redis2019!
-      SPRING_KAFKA_CONSUMER_BOOTSTRAP_SERVERS: kafka:9092
-    depends_on:
-      [ discovery, config, redis, kafka, service-producer ]
-    networks:
-      - micros-network
-    scale: 1
-    restart: always
-    ports:
-      - "8082"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka/
 
   gateway:
     extends:
@@ -95,42 +34,110 @@ services:
       - micros-network
     restart: always
     ports:
-      - "9090:9090"
-
-  zookeeper:
-    image: bitnami/zookeeper:latest
+      - 9090:9090
     environment:
-      - ZOOKEEPER_CLIENT_PORT=2181
-      - ZOOKEEPER_TICK_TIME=2000
-      - ALLOW_ANONYMOUS_LOGIN=yes
-    ports:
-      - 2181:2181
-    restart: always
-    networks:
-      - micros-network
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka/
 
-  kafka:
-    image: bitnami/kafka:latest
-    depends_on:
-      - zookeeper
-    ports:
-      - 9092:29092
-    restart: always
-    environment:
-      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
-      - ALLOW_PLAINTEXT_LISTENER=yes
-      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
-      - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9093
-      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka1:9092,EXTERNAL://localhost:9093
-      - KAFKA_INTER_BROKER_LISTENER_NAME=CLIENT
-      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+#  mysql:
+#    image: mariadb:10.6.4-focal
+#    command: '--default-authentication-plugin=mysql_native_password'
+#    environment:
+#      - MYSQL_DATABASE=mysql
+#      - MYSQL_ROOT_PASSWORD=rootpassword@321
+#    restart: always
+#    healthcheck:
+#      test: [ "CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent" ]
+#      interval: 3s
+#      retries: 5
+#      start_period: 30s
+#    volumes:
+#      - mysql-data:/var/lib/mysql
+#    networks:
+#      - micros-network
+#    expose:
+#      - 3306
 
-    networks:
-      - micros-network
+#  redis:
+#    image: redis
+#    command: redis-server --requirepass Redis@321!
+#    ports:
+#      - "16379:6379"
+#    restart: always
+#    networks:
+#      - micros-network
+#
+#  service-producer:
+#    extends:
+#      file: ./service-producer/app.yml
+#      service: service-producer
+#    environment:
+#      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka/
+#      MYSQL_HOST: mysqldb
+#      SPRING_KAFKA_PRODUCER_BOOTSTRAP_SERVERS: kafka:9092
+#    depends_on:
+#      [ discovery, config ]
+#    networks:
+#      - micros-network
+#      - micros-mysql
+#    scale: 1
+#    restart: always
+#    ports:
+#      - 8081
 
-volumes:
-  mysql-data: {}
+#  service-consumer:
+#    extends:
+#      file: ./service-consumer/app.yml
+#      service: service-consumer
+#    environment:
+#      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka/
+#      SPRING_REDIS_HOST: redis
+#      SPRING_REDIS_PORT: 6379
+#      SPRING_REDIS_PASSWORD: Redis2019!
+#      SPRING_KAFKA_CONSUMER_BOOTSTRAP_SERVERS: kafka:9092
+#    depends_on:
+#      [ discovery, config, service-producer ]
+#    networks:
+#      - micros-network
+#    scale: 1
+#    restart: always
+#    ports:
+#      - 8082
+
+
+#  zookeeper:
+#    image: bitnami/zookeeper:latest
+#    environment:
+#      - ZOOKEEPER_CLIENT_PORT=2181
+#      - ZOOKEEPER_TICK_TIME=2000
+#      - ALLOW_ANONYMOUS_LOGIN=yes
+#    ports:
+#      - 2181:2181
+#    restart: always
+#    networks:
+#      - micros-network
+#
+#  kafka:
+#    image: bitnami/kafka:latest
+#    depends_on:
+#      - zookeeper
+#    ports:
+#      - 9092:29092
+#    restart: always
+#    environment:
+#      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+#      - ALLOW_PLAINTEXT_LISTENER=yes
+#      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
+#      - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9093
+#      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka1:9092,EXTERNAL://localhost:9093
+#      - KAFKA_INTER_BROKER_LISTENER_NAME=CLIENT
+#      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+#
+#    networks:
+#      - micros-network
+
+#volumes:
+#  mysql-data: {}
 networks:
   micros-network:
     driver: bridge
-  micros-mysql: {}
+#  micros-mysql: {}

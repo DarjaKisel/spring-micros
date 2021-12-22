@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -xe
 
-#./build.sh
-#./build-docker.sh
+./build-services.sh
+./build-docker.sh
 
+docker compose up --force-recreate --remove-orphans --build -d
 
-docker-compose up -d
-
+docker image prune -a --force --filter "until=24h"

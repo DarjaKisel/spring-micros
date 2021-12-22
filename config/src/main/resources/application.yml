@@ -2,17 +2,14 @@ server:
   port: 8888
 
 spring:
-  application:
-    name: config
   profiles:
     active: native
-  cloud:
-    config:
-      server:
-        native:
-          search-locations: classpath:/config/{application}
-    discovery:
-      enabled: false
+
+eureka:
+  client:
+    # https://github.com/spring-cloud/spring-cloud-netflix/issues/2541
+    service-url:
+      defaultZone: ${SERVICE_URL_DEFAULT_ZONE}
 
 logging:
   level:

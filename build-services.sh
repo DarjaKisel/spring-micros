@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 set -ex
 
-for serviceDirectory in discovery config service-producer service-consumer gateway
+for serviceDirectory in discovery config gateway
+#for serviceDirectory in discovery config service-producer service-consumer gateway
 do
  pushd ./$serviceDirectory
- ./gradlew clean check bootJar
+# ./gradlew clean check bootJar
+ ./gradlew clean bootJar
  popd
 done

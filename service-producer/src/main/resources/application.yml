@@ -4,13 +4,6 @@ server:
 spring:
   application:
     name: service-producer
-  cloud:
-    discovery:
-      enabled: true
-    config:
-      discovery:
-        service-id: config
-      fail-fast: true
 
 logging:
   level:

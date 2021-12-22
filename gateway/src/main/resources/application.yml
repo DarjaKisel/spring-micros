@@ -4,21 +4,9 @@ server:
 eureka:
   client:
     register-with-eureka: false
-
-spring:
-  application:
-    name: gateway
-  cloud:
-    gateway:
-      routes:
-        - id: service-producer
-          uri: lb://service-producer
-          predicates:
-            - Path=/producer/**
-        - id: service-consumer
-          uri: lb://service-consumer
-          predicates:
-            - Path=/consumer/**
+    # https://github.com/spring-cloud/spring-cloud-netflix/issues/2541
+    service-url:
+      defaultZone: ${SERVICE_URL_DEFAULT_ZONE}
 
 logging:
   level:
