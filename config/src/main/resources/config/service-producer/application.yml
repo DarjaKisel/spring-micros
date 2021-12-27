@@ -3,22 +3,14 @@ spring:
     url: jdbc:mysql://mysql:3306/${MYSQL_DB}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&createDatabaseIfNotExist=true
     username: mysql
     password: ${MYSQL_PASSWORD:password@321}
-  sql:
-    init:
-      mode: always
-      schema-locations: classpath:/schema.sql
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
     database: mysql
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     show-sql: true
-#disable service discovery
-  cloud:
-    discovery:
-      enabled: false
 # Enable logging for config troubleshooting
 #logging:
 #  level:

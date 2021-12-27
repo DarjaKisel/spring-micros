@@ -29,7 +29,7 @@ services:
       file: ./gateway/app.yml
       service: gateway
     depends_on:
-      [ discovery, config ]
+      [ discovery, config, service-producer ]
     networks:
       - micros-network
     restart: always
@@ -38,24 +38,24 @@ services:
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka/
 
-#  mysql:
-#    image: mariadb:10.6.4-focal
-#    command: '--default-authentication-plugin=mysql_native_password'
-#    environment:
-#      - MYSQL_DATABASE=mysql
-#      - MYSQL_ROOT_PASSWORD=rootpassword@321
-#    restart: always
-#    healthcheck:
-#      test: [ "CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent" ]
-#      interval: 3s
-#      retries: 5
-#      start_period: 30s
-#    volumes:
-#      - mysql-data:/var/lib/mysql
-#    networks:
-#      - micros-network
-#    expose:
-#      - 3306
+  mysql:
+    image: mariadb:10.6.4-focal
+    command: '--default-authentication-plugin=mysql_native_password'
+    environment:
+      - MYSQL_DATABASE=example
+      - MYSQL_ROOT_PASSWORD=rootpassword@321
+    restart: always
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent" ]
+      interval: 3s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - micros-network
+    expose:
+      - 3306
 
 #  redis:
 #    image: redis
@@ -66,23 +66,23 @@ services:
 #    networks:
 #      - micros-network
 #
-#  service-producer:
-#    extends:
-#      file: ./service-producer/app.yml
-#      service: service-producer
-#    environment:
-#      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka/
-#      MYSQL_HOST: mysqldb
-#      SPRING_KAFKA_PRODUCER_BOOTSTRAP_SERVERS: kafka:9092
-#    depends_on:
-#      [ discovery, config ]
-#    networks:
-#      - micros-network
+  service-producer:
+    extends:
+      file: ./service-producer/app.yml
+      service: service-producer
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka/
+      MYSQL_HOST: mysqldb
+      SPRING_KAFKA_PRODUCER_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      [ discovery, config ]
+    networks:
+      - micros-network
 #      - micros-mysql
-#    scale: 1
-#    restart: always
-#    ports:
-#      - 8081
+    scale: 1
+    restart: always
+    ports:
+      - 8081
 
 #  service-consumer:
 #    extends:
@@ -135,8 +135,8 @@ services:
 #    networks:
 #      - micros-network
 
-#volumes:
-#  mysql-data: {}
+volumes:
+  mysql-data: {}
 networks:
   micros-network:
     driver: bridge

@@ -5,6 +5,11 @@ spring:
   application:
     name: service-producer
 
+eureka:
+  client:
+    service-url:
+      defaultZone: ${SERVICE_URL_DEFAULT_ZONE}
+
 logging:
   level:
     service-producer: DEBUG
