@@ -47,7 +47,7 @@ public class Pet extends BaseEntity {
   @ManyToOne
   private Owner owner;
 
-  @OneToMany(mappedBy = "Pet", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
   @Fetch(FetchMode.JOIN)
   private Set<Procedure> procedures;
 

@@ -6,4 +6,4 @@ set -xe
 
 docker compose up --force-recreate --remove-orphans --build -d
 
-docker image prune -a --force --filter "until=24h"
+docker rmi $(docker images --filter "dangling=true")
