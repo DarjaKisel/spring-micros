@@ -133,7 +133,7 @@ Desktop.ini
 ######################
 # Gradle Wrapper
 ######################
-!/*/gradle/wrapper/
+!/*/gradle/wrapper/**
 
 ######################
 # ESLint
