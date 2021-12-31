@@ -24,12 +24,14 @@ public class Procedure extends BaseEntity {
       LocalDateTime createdDate,
       LocalDateTime lastModifiedDate,
       LocalDateTime dateTime,
-      String description)
+      String description,
+      UUID doctorId)
   {
     super(petId, version, createdDate, lastModifiedDate);
 
     this.dateTime = dateTime;
     this.description = description;
+    this.doctorId = doctorId;
   }
 
   @ManyToOne
@@ -37,4 +39,5 @@ public class Procedure extends BaseEntity {
 
   private LocalDateTime dateTime;
   private String description;
+  private UUID doctorId;
 }

@@ -74,7 +74,7 @@ services:
     scale: 1
     restart: always
     ports:
-      - 8081
+      - 8082:8082
 
 #  service-consumer:
 #    extends:
