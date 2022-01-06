@@ -21,11 +21,11 @@ public class BaseDto {
     @JsonProperty("version")
     private Integer version = null;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ", shape = JsonFormat.Shape.STRING)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", shape = JsonFormat.Shape.STRING)
     @JsonProperty("createdDate")
     private LocalDateTime createdOn = null;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ", shape = JsonFormat.Shape.STRING)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", shape = JsonFormat.Shape.STRING)
     @JsonProperty("lastModifiedDate")
     private LocalDateTime lastModifiedOn = null;
 }
