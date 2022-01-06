@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -xe
 
-for serviceName in discovery config service-producer gateway
+for serviceName in discovery config service-producer
 #for serviceName in discovery config service-producer service-consumer gateway
 do
  pushd ./$serviceName

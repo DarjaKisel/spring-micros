@@ -24,20 +24,6 @@ services:
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka/
 
-  gateway:
-    extends:
-      file: ./gateway/app.yml
-      service: gateway
-    depends_on:
-      [ discovery, config, service-producer ]
-    networks:
-      - micros-network
-    restart: always
-    ports:
-      - 9090:9090
-    environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka/
-
   mysql:
     image: mariadb:10.6.4-focal
     command: '--default-authentication-plugin=mysql_native_password'

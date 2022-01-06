@@ -1,4 +1,0 @@
-services:
-
-  gateway:
-    image: dzinevich/gateway

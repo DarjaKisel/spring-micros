@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -ex
 
-for serviceDirectory in discovery config service-producer gateway
+for serviceDirectory in discovery config service-producer
 #for serviceDirectory in discovery config service-producer service-consumer gateway
 do
  pushd ./$serviceDirectory
