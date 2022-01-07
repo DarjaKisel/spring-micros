@@ -1,0 +1,22 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: service-producer
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=MYSQL
+    initialize: true
+    init-mode: always
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    database: mysql
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+logging:
+  level:
+    service-producer: DEBUG

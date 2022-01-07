@@ -10,8 +10,4 @@ public interface PetOwnerService {
   PetOwnerPagedList listOwnersWithPets(Pageable pageable);
   PetOwnerDto listSingleOwnerPets(UUID ownerId);
   PetOwnerDto addNewOwner(PetOwnerDto petOwnerDto);
-
-  PetOwnerDto addNewPet(UUID ownerId, PetDto petDto);
-  PetOwnerDto updatePetInfo(UUID petId, PetDto petDto);
-  void deletePet(UUID petId);
 }

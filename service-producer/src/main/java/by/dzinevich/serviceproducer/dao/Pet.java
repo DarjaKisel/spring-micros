@@ -1,9 +1,9 @@
 package by.dzinevich.serviceproducer.dao;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -12,6 +12,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -20,6 +21,7 @@ import org.hibernate.annotations.FetchMode;
 @NoArgsConstructor
 @Entity
 @Table(name = "pets")
+@ToString(callSuper = true)
 public class Pet extends BaseEntity {
 
   @Builder
@@ -47,8 +49,8 @@ public class Pet extends BaseEntity {
   @ManyToOne
   private Owner owner;
 
-  @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "pet")
   @Fetch(FetchMode.JOIN)
-  private Set<Procedure> procedures;
+  private Set<Procedure> procedures = new HashSet<>();
 
 }

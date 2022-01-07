@@ -1,6 +1,7 @@
 package by.dzinevich.serviceproducer.dao;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import javax.persistence.Entity;
@@ -10,12 +11,16 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "owners")
+@ToString(callSuper = true)
 public class Owner extends BaseEntity {
 
   @Builder
@@ -41,5 +46,6 @@ public class Owner extends BaseEntity {
   private int age;
 
   @OneToMany(mappedBy = "owner")
-  private Set<Pet> pets;
+  @Fetch(FetchMode.JOIN)
+  private Set<Pet> pets = new HashSet<>();
 }
