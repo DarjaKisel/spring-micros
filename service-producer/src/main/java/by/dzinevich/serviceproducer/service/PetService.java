@@ -5,6 +5,6 @@ import java.util.UUID;
 
 public interface PetService {
   PetDto addNewPet(UUID ownerId, PetDto petDto);
-  PetDto updatePetInfo(UUID petId, PetDto petDto);
-  void deletePet(UUID petId);
+  PetDto updatePet(UUID ownerId, PetDto petDto);
+  void deletePet(UUID uuid);
 }

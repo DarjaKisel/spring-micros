@@ -1,4 +1,4 @@
-package by.dzinevich.serviceproducer.service;
+package by.dzinevich.serviceproducer.persistence;
 
 import by.dzinevich.serviceproducer.dao.Owner;
 import by.dzinevich.serviceproducer.mapper.OwnerMapper;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor(onConstructor = @__({@Autowired}))
-public class PetOwnerServiceImpl implements PetOwnerService {
+public class OwnerPersistenceImpl implements OwnerPersistence {
 
   private final OwnerRepository ownerRepository;
   private final OwnerMapper ownerMapper;

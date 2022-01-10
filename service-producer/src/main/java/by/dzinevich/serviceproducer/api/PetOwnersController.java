@@ -1,10 +1,8 @@
 package by.dzinevich.serviceproducer.api;
 
-import by.dzinevich.serviceproducer.model.PetDto;
 import by.dzinevich.serviceproducer.model.PetOwnerDto;
 import by.dzinevich.serviceproducer.model.PetOwnerPagedList;
-import by.dzinevich.serviceproducer.service.PetOwnerService;
-import by.dzinevich.serviceproducer.service.PetService;
+import by.dzinevich.serviceproducer.persistence.OwnerPersistence;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/owners")
 public class PetOwnersController {
 
-  private final PetOwnerService petOwnerService;
-  private final PetService petService;
+  private final OwnerPersistence ownerPersistence;
 
   @GetMapping
   public ResponseEntity<PetOwnerPagedList> listOwnersWithPets(
@@ -39,25 +36,20 @@ public class PetOwnersController {
     pageNumber = Optional.ofNullable(pageNumber).filter(nr -> nr > 0).orElse(0);
     pageSize = Optional.ofNullable(pageSize).filter(size -> size > 1).orElse(25);
 
-    var owners = petOwnerService.listOwnersWithPets(PageRequest.of(pageNumber, pageSize));
+    var owners = ownerPersistence.listOwnersWithPets(PageRequest.of(pageNumber, pageSize));
 
     return new ResponseEntity<>(owners, HttpStatus.OK);
   }
 
   @GetMapping("/{ownerId}")
   public ResponseEntity<PetOwnerDto> listSingleOwnerPets(@PathVariable("ownerId") UUID ownerId) {
-    var owner = petOwnerService.listSingleOwnerPets(ownerId);
+    var owner = ownerPersistence.listSingleOwnerPets(ownerId);
 
     return new ResponseEntity<>(owner, HttpStatus.OK);
   }
 
   @PostMapping
   public ResponseEntity<PetOwnerDto> addNewOwner(@Validated @RequestBody PetOwnerDto petOwnerDto) {
-    return new ResponseEntity<>(petOwnerService.addNewOwner(petOwnerDto), HttpStatus.CREATED);
-  }
-
-  @PostMapping("/{ownerId}/pets")
-  public ResponseEntity<PetDto> addNewPet(@PathVariable("ownerId") UUID ownerId, @Validated @RequestBody PetDto petDto) {
-    return new ResponseEntity<>(petService.addNewPet(ownerId, petDto), HttpStatus.CREATED);
+    return new ResponseEntity<>(ownerPersistence.addNewOwner(petOwnerDto), HttpStatus.CREATED);
   }
 }

@@ -13,6 +13,12 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  kafka:
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      bootstrap:
+        servers: kafka:9092
 # Enable logging for config troubleshooting
 #logging:
 #  level:

@@ -7,6 +7,12 @@ spring:
   profiles:
     active: local
 
+petservice:
+  kafka:
+    topic: pets
+  threads:
+    size: 2
+
 eureka:
   client:
     service-url:
