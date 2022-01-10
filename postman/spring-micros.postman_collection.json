@@ -1,0 +1,227 @@
+{
+	"info": {
+		"_postman_id": "77c1202e-3e42-4553-aa64-161394d82f60",
+		"name": "spring-micros",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "get owners all - with pets with procedures",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/owners",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"owners"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get owner by id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/owners/dff87a7c-bbf1-425b-810d-dd845705a27d",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"owners",
+						"dff87a7c-bbf1-425b-810d-dd845705a27d"
+					],
+					"query": [
+						{
+							"key": "ownerId",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add new owner",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"test@test.com\",\n    \"name\": \"John Doe\",\n    \"age\": 23\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/owners/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"owners",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add pet to owner - cat",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Kitty\",\n    \"animal\": \"CAT\",\n    \"age\": 10\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/owners/dff87a7c-bbf1-425b-810d-dd845705a27d/pets",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"owners",
+						"dff87a7c-bbf1-425b-810d-dd845705a27d",
+						"pets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add pet to owner - dog",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Doggy\",\n    \"animal\": \"DOG\",\n    \"age\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/owners/dff87a7c-bbf1-425b-810d-dd845705a27d/pets",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"owners",
+						"dff87a7c-bbf1-425b-810d-dd845705a27d",
+						"pets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update pet for owner",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Missy\",\n    \"animal\": \"HAMSTER\",\n    \"age\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/pets/2f8de6ce-d3c2-4926-83ec-190e802c4047/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"pets",
+						"2f8de6ce-d3c2-4926-83ec-190e802c4047",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete pet for owner",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/pets/2f8de6ce-d3c2-4926-83ec-190e802c4047",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"pets",
+						"2f8de6ce-d3c2-4926-83ec-190e802c4047"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
