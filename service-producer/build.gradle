@@ -4,6 +4,8 @@ plugins {
     id 'java'
 }
 
+apply from: 'versions.gradle'
+
 group = 'by.dzinevich'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
@@ -12,17 +14,6 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
-}
-
-repositories {
-    mavenCentral()
-}
-
-ext {
-    springCloudVersion = "2020.0.4"
-    mapstructVersion = '1.4.2.Final'
-    lombokVersion = '1.18.20'
-    lombokMapstructBindingVersion = '0.2.0'
 }
 
 dependencies {
